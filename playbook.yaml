@@ -1,0 +1,48 @@
+---
+- name: Configure Fedora IoT on Raspberry Pi
+  hosts: edge
+  gather_facts: true
+  vars:
+    user_name:
+    user_full_name:
+    user_ssh_pub_key:
+  tasks:
+    - name: Define hostname
+      ansible.builtin.hostname:
+        name:
+
+    - name: Add unprivileged user
+      ansible.builtin.user:
+        name:
+        comment:
+        uid: 1000
+        group: wheel
+        state: present
+
+    - name: Set authorized key for new user
+      ansible.posix.authorized_key:
+        user:
+        state: present
+        key: "{{ lookup('file', user_ssh_pub_key) }}"
+
+    - name: Allow group wheel sudo access no password
+      community.general.sudoers:
+        name: wheel-all
+        group: wheel
+        commands: ALL
+        nopassword: true
+
+    - name: Layer packages
+      community.general.rpm_ostree_pkg:
+        name:
+          - fastfetch
+        state: present
+      register: ostree_results
+
+    - name: Reboot system to enable new packages
+      ansible.builtin.reboot:
+        reboot_timeout: 600
+      when:
+        - ostree_results is changed
+
+
