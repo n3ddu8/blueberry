@@ -33,15 +33,14 @@
         commands: ALL
         nopassword: true
 
+    - name: Load package list from JSON file
+      ansible.builtin.include_vars:
+        file: packages.json
+        name: package_vars
+
     - name: Layer packages
       community.general.rpm_ostree_pkg:
-        name:
-          - fastfetch
-          - cockpit
-          - cockpit-networkmanager
-          - cockpit-podman
-          - cockpit-selinux
-          - cockpit-storaged
+        name: "{{ package_vars.packages }}"
         state: present
       register: ostree_results
 
