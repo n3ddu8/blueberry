@@ -3,25 +3,26 @@
   hosts: edge
   gather_facts: true
   vars:
-    user_name:
-    user_full_name:
-    user_ssh_pub_key:
+    user_name: "{{ host_user_name }}"
+    user_full_name: "{{ host_user_name }}"
+    user_ssh_pub_key: "{{ ssh_public_key_file }}"
+
   tasks:
     - name: Define hostname
       ansible.builtin.hostname:
-        name:
+        name: "{{ pi_hostname }}"
 
     - name: Add unprivileged user
       ansible.builtin.user:
-        name:
-        comment:
+        name: "{{ pi_user_name }}"
+        comment: "{{ pi_user_name }}"
         uid: 1000
         group: wheel
         state: present
 
     - name: Set authorized key for new user
       ansible.posix.authorized_key:
-        user:
+        user: "{{ pi_user_name }}"
         state: present
         key: "{{ lookup('file', user_ssh_pub_key) }}"
 
