@@ -37,6 +37,11 @@
       community.general.rpm_ostree_pkg:
         name:
           - fastfetch
+          - cockpit
+          - cockpit-networkmanager
+          - cockpit-podman
+          - cockpit-selinux
+          - cockpit-storaged
         state: present
       register: ostree_results
 
@@ -46,4 +51,18 @@
       when:
         - ostree_results is changed
 
+    - name: Enable Cockpit service
+      ansible.builtin.systemd:
+        name: cockpit
+        state: started
+        enabled: yes
 
+    - name: Allow Cockpit service through firewall
+      ansible.builtin.command:
+        cmd: "firewall-cmd --permanent --add-port=9090/tcp"
+      become: true
+
+    - name: Reload firewall
+      ansible.builtin.command:
+        cmd: "firewall-cmd --reload"
+      become: true
