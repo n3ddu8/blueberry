@@ -66,3 +66,10 @@
       ansible.builtin.command:
         cmd: "firewall-cmd --reload"
       become: true
+
+    - name: Enable Tailscale service
+      ansible.builtin.systemd:
+        name: tailscaled
+        state: started
+        enabled: yes
+

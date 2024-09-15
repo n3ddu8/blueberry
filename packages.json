@@ -1,6 +1,7 @@
 {
   "packages": [
     "fastfetch",
+    "tailscale",
     "cockpit",
     "cockpit-networkmanager",
     "cockpit-podman",
