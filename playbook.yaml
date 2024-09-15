@@ -16,6 +16,7 @@
       ansible.builtin.user:
         name: "{{ pi_user_name }}"
         comment: "{{ pi_user_name }}"
+        password: "{{ pi_user_pass }}"
         uid: 1000
         group: wheel
         state: present

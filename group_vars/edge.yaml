@@ -5,4 +5,5 @@ ssh_public_key_file:
 pi_host:
 pi_hostname:
 pi_user_name:
+pi_user_pass:
 
