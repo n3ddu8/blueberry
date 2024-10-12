@@ -73,3 +73,50 @@
         state: started
         enabled: yes
 
+    - name: Ensure the rpm-ostreed-upgrade-reboot.service exists with desired content
+      ansible.builtin.copy:
+        dest: /etc/systemd/system/rpm-ostreed-upgrade-reboot.service
+        content: |
+          [Unit]
+          Description=rpm-ostree upgrade and reboot
+          ConditionPathExists=/run/ostree-booted
+
+          [Service]
+          Type=simple
+          ExecStart=/usr/bin/rpm-ostree upgrade --reboot
+        owner: root
+        group: root
+        mode: '0644'
+      notify:
+        - Reload systemd
+
+    - name: Ensure the rpm-ostreed-upgrade-reboot.timer exists with desired content
+      ansible.builtin.copy:
+        dest: /etc/systemd/system/rpm-ostreed-upgrade-reboot.timer
+        content: |
+          [Unit]
+          Description=rpm-ostree upgrade and reboot trigger
+          ConditionPathExists=/run/ostree-booted
+
+          [Timer]
+          OnCalendar=Sun *-*-* 03:00:00
+          
+          [Install]
+          WantedBy=timers.target
+        owner: root
+        group: root
+        mode: '0644'
+      notify:
+        - Reload systemd
+
+    - name: Enable and start the rpm-ostreed-upgrade-reboot.timer
+      ansible.builtin.systemd:
+        name: rpm-ostreed-upgrade-reboot.timer
+        enabled: true
+        state: started
+
+  handlers:
+    - name: Reload systemd
+      ansible.builtin.systemd:
+        daemon_reload: true
+
