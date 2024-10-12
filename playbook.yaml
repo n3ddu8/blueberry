@@ -3,25 +3,27 @@
   hosts: edge
   gather_facts: true
   vars:
-    user_name:
-    user_full_name:
-    user_ssh_pub_key:
+    user_name: "{{ host_user_name }}"
+    user_full_name: "{{ host_user_name }}"
+    user_ssh_pub_key: "{{ ssh_public_key_file }}"
+
   tasks:
     - name: Define hostname
       ansible.builtin.hostname:
-        name:
+        name: "{{ pi_hostname }}"
 
     - name: Add unprivileged user
       ansible.builtin.user:
-        name:
-        comment:
+        name: "{{ pi_user_name }}"
+        comment: "{{ pi_user_name }}"
+        password: "{{ pi_user_pass }}"
         uid: 1000
         group: wheel
         state: present
 
     - name: Set authorized key for new user
       ansible.posix.authorized_key:
-        user:
+        user: "{{ pi_user_name }}"
         state: present
         key: "{{ lookup('file', user_ssh_pub_key) }}"
 
@@ -32,10 +34,14 @@
         commands: ALL
         nopassword: true
 
+    - name: Load package list from JSON file
+      ansible.builtin.include_vars:
+        file: packages.json
+        name: package_vars
+
     - name: Layer packages
       community.general.rpm_ostree_pkg:
-        name:
-          - fastfetch
+        name: "{{ package_vars.packages }}"
         state: present
       register: ostree_results
 
@@ -45,4 +51,72 @@
       when:
         - ostree_results is changed
 
+    - name: Enable Cockpit service
+      ansible.builtin.systemd:
+        name: cockpit
+        state: started
+        enabled: yes
+
+    - name: Allow Cockpit service through firewall
+      ansible.builtin.command:
+        cmd: "firewall-cmd --permanent --add-port=9090/tcp"
+      become: true
+
+    - name: Reload firewall
+      ansible.builtin.command:
+        cmd: "firewall-cmd --reload"
+      become: true
+
+    - name: Enable Tailscale service
+      ansible.builtin.systemd:
+        name: tailscaled
+        state: started
+        enabled: yes
+
+    - name: Ensure the rpm-ostreed-upgrade-reboot.service exists with desired content
+      ansible.builtin.copy:
+        dest: /etc/systemd/system/rpm-ostreed-upgrade-reboot.service
+        content: |
+          [Unit]
+          Description=rpm-ostree upgrade and reboot
+          ConditionPathExists=/run/ostree-booted
+
+          [Service]
+          Type=simple
+          ExecStart=/usr/bin/rpm-ostree upgrade --reboot
+        owner: root
+        group: root
+        mode: '0644'
+      notify:
+        - Reload systemd
+
+    - name: Ensure the rpm-ostreed-upgrade-reboot.timer exists with desired content
+      ansible.builtin.copy:
+        dest: /etc/systemd/system/rpm-ostreed-upgrade-reboot.timer
+        content: |
+          [Unit]
+          Description=rpm-ostree upgrade and reboot trigger
+          ConditionPathExists=/run/ostree-booted
+
+          [Timer]
+          OnCalendar=Sun *-*-* 03:00:00
+          
+          [Install]
+          WantedBy=timers.target
+        owner: root
+        group: root
+        mode: '0644'
+      notify:
+        - Reload systemd
+
+    - name: Enable and start the rpm-ostreed-upgrade-reboot.timer
+      ansible.builtin.systemd:
+        name: rpm-ostreed-upgrade-reboot.timer
+        enabled: true
+        state: started
+
+  handlers:
+    - name: Reload systemd
+      ansible.builtin.systemd:
+        daemon_reload: true
 

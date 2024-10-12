@@ -1,0 +1,12 @@
+{
+  "packages": [
+    "fastfetch",
+    "tailscale",
+    "cockpit",
+    "cockpit-networkmanager",
+    "cockpit-podman",
+    "cockpit-selinux",
+    "cockpit-storaged",
+    "cockpit-pcp"
+  ]
+}
