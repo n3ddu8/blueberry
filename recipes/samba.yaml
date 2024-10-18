@@ -1,5 +1,5 @@
 ---
-- name: Set up Samba in a container using Ansible
+- name: Set up Samba in a container
   hosts: edge
   gather_facts: true
   vars_prompt:
