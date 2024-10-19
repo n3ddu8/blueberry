@@ -9,10 +9,6 @@
 
 ### Medium
 - Add certificate for homeassistant
-- Homeassistant recipe throws a warning on new install
-```
-[WARNING]: Module remote_tmp /var/home/piadmin/.ansible/tmp did not exist and was created with a mode of 0700, this may cause issues when running as another user. To avoid this, create the remote_tmp dir with the correct permissions manually
-```
 - Homeassistant logs show:
 ```
 WARNING (MainThread) [bluetooth_adapters.dbus] DBus authentication error; make sure the DBus socket is available and the user has the correct permissions: authentication failed: REJECTED: ['EXTERNAL']

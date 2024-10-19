@@ -4,6 +4,7 @@
   gather_facts: true
 
   tasks:
+
     - name: Add bluetooth support
       community.general.rpm_ostree_pkg:
         name:

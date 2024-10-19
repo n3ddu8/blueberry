@@ -39,6 +39,12 @@
         commands: ALL
         nopassword: true
 
+    - name: Create tmp file for new user
+      file:
+        path: /var/home/{{ pi_user_name }}/.ansible/tmp
+        state: directory
+        mode: '0777'
+
     - name: Load package list from JSON file
       ansible.builtin.include_vars:
         file: packages.json
