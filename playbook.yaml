@@ -6,6 +6,11 @@
     user_name: "{{ host_user_name }}"
     user_full_name: "{{ host_user_name }}"
     user_ssh_pub_key: "{{ ssh_public_key_file }}"
+  vars_prompt:
+    - name: "build_type"
+      prompt: "Build type [minimal(default)/extended]"
+      default: "minimal"
+      private: no
 
   tasks:
     - name: Define hostname
@@ -50,6 +55,19 @@
         reboot_timeout: 600
       when:
         - ostree_results is changed
+
+    - name: Layer extended packages
+      community.general.rpm_ostree_pkg:
+        name: cronie
+        state: present
+      register: extended_ostree_results
+      when: build_type == "extended"
+
+    - name: Reboot system to enable new packages
+      ansible.builtin.reboot:
+        reboot_timeout: 600
+      when:
+        - extended_ostree_results is changed
 
     - name: Enable Cockpit service
       ansible.builtin.systemd:
