@@ -3,13 +3,16 @@
 ## Priorty
 
 ### High
-- Enable cockpit service
 - Add systemd service to autostart for samba container
+- Add systemd service to autostart for homeassistant container
 - Configure homeassistant to work with SELinux w/o disabling it
 
 ### Medium
 - Add certificate for homeassistant
-- Catch the warning Homeassistant recipe throws on a new install
+- Homeassistant recipe throws a warning on new install
+```
+[WARNING]: Module remote_tmp /var/home/piadmin/.ansible/tmp did not exist and was created with a mode of 0700, this may cause issues when running as another user. To avoid this, create the remote_tmp dir with the correct permissions manually
+```
 - Homeassistant logs show:
 ```
 WARNING (MainThread) [bluetooth_adapters.dbus] DBus authentication error; make sure the DBus socket is available and the user has the correct permissions: authentication failed: REJECTED: ['EXTERNAL']

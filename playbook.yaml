@@ -75,6 +75,12 @@
         state: started
         enabled: yes
 
+    - name: Enable and start Cockpit socket
+      ansible.builtin.systemd:
+        name: cockpit.socket
+        state: started
+        enabled: yes
+
     - name: Allow Cockpit service through firewall
       ansible.builtin.command:
         cmd: "firewall-cmd --permanent --add-port=9090/tcp"
