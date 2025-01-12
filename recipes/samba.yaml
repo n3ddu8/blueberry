@@ -1,0 +1,99 @@
+---
+- name: Set up Samba in a container
+  hosts: edge
+  gather_facts: true
+  vars_prompt:
+    - name: "container_name"
+      prompt: "Specify container name"
+      private: no
+    - name: "samba_dir"
+      prompt: "Specify Samba directory"
+      private: no
+    - name: "samba_subdir"
+      prompt: "Specify Samba sub-directory"
+      private: no
+
+  tasks:
+    - name: Create Samba directories
+      file:
+        path: "{{ samba_dir }}/{{ samba_subdir }}"
+        state: directory
+        mode: '0777'
+        recurse: true
+
+    - name: Change SELinux context
+      command: chcon -Rt svirt_sandbox_file_t "{{ samba_dir }}/{{ samba_subdir }}"
+
+    - name: Create smb.conf file
+      copy:
+        dest: "{{ samba_dir }}/smb.conf"
+        content: |
+          [global]
+          workgroup = HOME
+          security = user
+          map to guest = Bad Password
+          passdb backend = tdbsam
+          load printers = No
+          disable spoolss = yes
+          printcap name = /dev/null
+
+          [volume]
+          comment =
+          path = {{ samba_dir }}/{{ samba_subdir }}
+          browsable = yes
+          writable = yes
+          guest ok = yes
+          read only = no
+          force user = root
+          inherit acls = yes
+
+    - name: Create Containerfile
+      copy:
+        dest: "{{ samba_dir }}/Containerfile"
+        content: |
+          FROM registry.fedoraproject.org/fedora-minimal:latest
+          RUN microdnf -y update; microdnf -y install samba; microdnf -y install passwd; microdnf clean all; systemctl enable smb
+          RUN mkdir -m 777 {{ samba_dir }}
+          RUN mkdir -m 777 {{ samba_dir }}/{{ samba_subdir }}
+
+          EXPOSE 445 139 137/udp 138/udp
+
+          CMD [ "/sbin/init" ]
+
+    - name: Enable container_manage_cgroup SELinux boolean
+      seboolean:
+        name: container_manage_cgroup
+        state: true
+        persistent: true
+
+    - name: Configure firewall for trusted zone
+      firewalld:
+        zone: trusted
+        interface: cni-podman0
+        permanent: true
+        state: enabled
+        immediate: true
+
+    - name: Add Samba services to firewall
+      firewalld:
+        service: samba
+        permanent: true
+        state: enabled
+
+    - name: Reload firewall
+      command: firewall-cmd --reload
+
+    - name: Build Podman container
+      command: podman build -t "{{ container_name }}" "{{ samba_dir }}"
+
+    - name: Run Podman container
+      command: >
+        podman run
+        -m 512m
+        -u 0
+        -d
+        -p 445:445
+        --name {{ container_name }}
+        -v {{ samba_dir }}/smb.conf:/etc/samba/smb.conf:Z
+        -v {{ samba_dir }}/{{ samba_subdir }}:/home
+        {{ container_name }}

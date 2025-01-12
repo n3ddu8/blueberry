@@ -1,0 +1,57 @@
+---
+- name: Setup Home Assistant in a container
+  hosts: edge
+  gather_facts: true
+
+  tasks:
+
+    - name: Add bluetooth support
+      community.general.rpm_ostree_pkg:
+        name:
+          - bluez
+        state: present
+      register: ostree_results
+
+    - name: Reboot system to enable new package
+      ansible.builtin.reboot:
+        reboot_timeout: 600
+      when:
+        - ostree_results is changed
+
+    - name: Create Volume directory
+      become: yes
+      become_user: "{{ pi_user_name }}"
+      file:
+        path: /home/{{ pi_user_name }}/volumes/homeassistant
+        state: directory
+        mode: '0777'
+
+    - name: Open webUI in firewalld
+      become: yes
+      ansible.builtin.firewalld:
+        port: 8123/tcp
+        permanent: yes
+        immediate: yes
+        state: enabled
+
+    - name: Reload firewall
+      command: firewall-cmd --reload
+
+    - name: Run Podman container
+      become: yes
+      become_user: "{{ pi_user_name }}"
+      command: >
+        podman run -d --replace \
+          --name=homeassistant \
+          --net=host \
+          -e PUID=1000 \
+          -e PGID=1000 \
+          -e TZ=Etc/UTC \
+          -v /home/{{ pi_user_name }}/volumes/homeassistant:/config \
+          --cap-add=NET_ADMIN \
+          --cap-add=NET_RAW \
+          -v /var/run/dbus:/var/run/dbus:ro
+          --restart unless-stopped \
+          --security-opt label=disable \
+          lscr.io/linuxserver/homeassistant:latest
+
