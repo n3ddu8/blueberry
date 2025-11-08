@@ -27,7 +27,7 @@ Delegate=yes
 Type=notify
 NotifyAccess=all
 SyslogIdentifier=%N
-ExecStart=/usr/bin/podman run --name=ws --cidfile=%t/%N.cid --replace --rm --cgroups=split --sdnotify=conmon -d -v /:/host --env NAME=ws --label io.containers.autoupdate=registry --pid host --privileged quay.io/cockpit/ws:latest /container/label-run
+ExecStart=/usr/bin/podman run --name=ws --cidfile=%t/%N.cid --replace --rm --cgroups=split --sdnotify=conmon -d -p 9090:9090 -v /:/host --env NAME=ws --label io.containers.autoupdate=registry --pid host --privileged quay.io/cockpit/ws:latest /container/label-run
 
 [Install]
 WantedBy=default.target
