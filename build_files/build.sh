@@ -13,11 +13,14 @@ set -ouex pipefail
 dnf5 install -y tmux 
 
 # Use a COPR Example:
-#
+dnf5 -y config-manager addrepo --from-repofile=https://pkgs.tailscale.com/stable/fedora/tailscale.repo
+dnf5 -y install tailscale
+
 # dnf5 -y copr enable ublue-os/staging
 # dnf5 -y install package
 # Disable COPRs so they don't end up enabled on the final image:
 # dnf5 -y copr disable ublue-os/staging
+rm /etc/yum.repos.d/tailscale.repo
 
 #### Example for enabling a System Unit File
 
