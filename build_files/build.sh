@@ -16,6 +16,12 @@ dnf5 install -y \
 	cockpit-ostree \
 	cockpit-podman
 
+# Enables password based SSH auth (required for locally running cockpit web interface)
+echo 'PasswordAuthentication yes' | sudo tee /etc/ssh/sshd_config.d/02-enable-passwords.conf
+# cockpit-ws RPM is not installed, rather it is provided as a pre-defined systemd service which runs a podman container
+podman container runlabel INSTALL quay.io/cockpit/ws
+systemctl enable cockpit.service
+
 # Use a COPR Example:
 dnf5 -y config-manager addrepo --from-repofile=https://pkgs.tailscale.com/stable/fedora/tailscale.repo
 dnf5 -y install tailscale
