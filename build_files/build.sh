@@ -40,4 +40,5 @@ rm /etc/yum.repos.d/tailscale.repo
 #### Example for enabling a System Unit File
 
 systemctl enable cockpit.service
+systemctl enable tailscaled
 systemctl enable podman.socket
