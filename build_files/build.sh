@@ -11,10 +11,20 @@ set -ouex pipefail
 
 # this installs a package from fedora repos
 dnf5 install -y \
-	tmux \
+	cockpit-networkmanager \
+	cockpit-podman \
+	cockpit-selinux \
 	cockpit-system \
-	cockpit-ostree \
-	cockpit-podman
+	docker-buildx \
+	docker-compose \
+	firewalld \
+	open-vm-tools \
+	podman \
+	podman-compose \
+	qemu-guest-agent \
+	tailscale \
+	tmux \
+	wireguard-tools
 
 # Enables password based SSH auth (required for locally running cockpit web interface)
 echo 'PasswordAuthentication yes' | sudo tee /etc/ssh/sshd_config.d/02-enable-passwords.conf
