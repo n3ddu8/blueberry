@@ -16,6 +16,7 @@ dnf5 install -y \
 	cockpit-selinux \
 	cockpit-system \
 	firewalld \
+	glibc-langpack-en \
 	open-vm-tools \
 	podman \
 	podman-compose \
