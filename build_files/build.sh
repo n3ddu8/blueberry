@@ -15,8 +15,6 @@ dnf5 install -y \
 	cockpit-podman \
 	cockpit-selinux \
 	cockpit-system \
-	docker-buildx \
-	docker-compose \
 	firewalld \
 	open-vm-tools \
 	podman \
