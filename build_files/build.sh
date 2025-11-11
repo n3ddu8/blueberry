@@ -16,6 +16,7 @@ dnf5 install -y \
 	cockpit-selinux \
 	cockpit-system \
 	firewalld \
+	glibc-langpack-en \
 	open-vm-tools \
 	podman \
 	podman-compose \
@@ -37,7 +38,10 @@ dnf5 -y install tailscale
 # dnf5 -y copr disable ublue-os/staging
 rm /etc/yum.repos.d/tailscale.repo
 
-#### Example for enabling a System Unit File
+# switch to server profile to allow cockpit by default
+cp -a /etc/firewalld/firewalld-server.conf /etc/firewalld/firewalld.conf
 
+#### Example for enabling a System Unit File
 systemctl enable cockpit.service
+systemctl enable tailscaled
 systemctl enable podman.socket
