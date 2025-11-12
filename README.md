@@ -2,7 +2,7 @@
 
 Blueberry aims to be a light-weight server OS for aarch64-SBC's like the Raspberry Pi 4, heavily influenced by [Universal Blue](https://universal-blue.org/), in particular [uCore](https://github.com/ublue-os/ucore), but built on Fedora IOT. Like uCore, it's an opinionated, "batteries included" custom image, built daily with some common tools added in.
 
-Blueberry began life as a series of Ansible playbooks for configuring a Fedora IOT install, however due to the Fedora IOT image not being publicly available, this involved layering many of the packages. Eventually the end product became unstable, and the project was shelved towards the end of 2024. In the intervening months however, the image has been made available on [quay.io](https://quay.io/repository/fedora/fedora-iot), making this now a viable project.
+Blueberry began life as a series of Ansible playbooks for configuring a Fedora IOT install, however due to the Fedora IOT image not being publicly available, this involved layering many of the packages. Eventually the end product became unstable, and the project was shelved towards the end of 2024. In the intervening months however, the FedoreaIOT image has been made available on [quay.io](https://quay.io/repository/fedora/fedora-iot), making this now a viable project.
 
 At present, Blueberry only builds a single, aarch64 image, based on [uCore minimal](https://github.com/ublue-os/ucore?tab=readme-ov-file#ucore-minimal), which is suitable for running containerized workloads on aarch64 systems supported by [Fedora IOT](https://docs.fedoraproject.org/en-US/iot/reference-platforms/), like it's influencer, this image tries to stay lightweight but functional:
 
