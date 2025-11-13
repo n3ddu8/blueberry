@@ -11,6 +11,7 @@ set -ouex pipefail
 
 # this installs a package from fedora repos
 dnf5 install -y \
+    git \
 	cockpit-networkmanager \
 	cockpit-podman \
 	cockpit-selinux \
