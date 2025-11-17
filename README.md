@@ -15,6 +15,7 @@ At present, Blueberry only builds a single, aarch64 image, based on [uCore minim
   - [podman-compose](https://github.com/containers/podman-compose) *podman is pre-installed in Fedora IOT*
   - [tailscale](https://tailscale.com) and [wireguard-tools](https://www.wireguard.com)
   - [tmux](https://github.com/tmux/tmux/wiki/Getting-Started)
+- Enables staging of automatic system updates via rpm-ostreed
 - Enables password based SSH auth (required for locally running cockpit web interface)
 
 > [!IMPORTANT]
@@ -26,4 +27,3 @@ At present, Blueberry only builds a single, aarch64 image, based on [uCore minim
 >   - udev rules: currently only supporting devices supported by Fedora IOT OOTB.
 >   - ZFS: generally not recommended on Raspberry PI devices due to poor performance with USB drives.
 >   - nvidia: while some older cards have been made to work with RPI devices, this is a pretty uncommon use-case.
->   - automatic system updates: Fedora IOT doesn't support automatic system updates, hopefully an alternative solution will be added in due course.

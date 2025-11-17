@@ -45,4 +45,5 @@ cp -a /etc/firewalld/firewalld-server.conf /etc/firewalld/firewalld.conf
 #### Example for enabling a System Unit File
 systemctl enable cockpit.service
 systemctl enable tailscaled
+systemctl enable rpm-ostreed-automatic.timer
 systemctl enable podman.socket
