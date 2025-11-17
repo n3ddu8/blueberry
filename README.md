@@ -21,9 +21,9 @@ At present, Blueberry only builds a single, aarch64 image, based on [uCore minim
 > [!IMPORTANT]
 > Per [cockpit's instructions](https://cockpit-project.org/running.html#coreos) the cockpit-ws RPM is **not** installed, rather it is provided as a pre-defined systemd service which runs a podman container.
 
-> [!IMPORTANT]
-> Differences between Blueberry and uCore:
->   - docker tools: unlike CoreOS, docker(moby-engine) is not pre-installed in Fedora IOT.
->   - udev rules: currently only supporting devices supported by Fedora IOT OOTB.
->   - ZFS: generally not recommended on Raspberry PI devices due to poor performance with USB drives.
->   - nvidia: while some older cards have been made to work with RPI devices, this is a pretty uncommon use-case.
+> [!NOTE]
+> Key differences between Blueberry and uCore-minimal:
+> - **Container tools**: Given the focus on SBC hardware, a single container engine is preferred. Podman is provided out-of-the-box with Fedora IoT.
+> - **udev rules**: Not required, as only devices already supported by Fedora IoT are currently in scope.
+> - **ZFS**: Generally discouraged on SBCs due to poor performance with USB-based storage.
+> - **NVIDIA support**: While some older GPUs have been adapted for Raspberry Pi devices, this remains a rare and non-standard use case.

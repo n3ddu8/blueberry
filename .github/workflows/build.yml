@@ -29,6 +29,14 @@ jobs:
   build_push:
     name: Build and push image
     runs-on: ubuntu-24.04-arm
+    if: |
+      github.event_name != 'push' ||
+      (
+        startsWith(github.event.head_commit.message, 'feat:') ||
+        startsWith(github.event.head_commit.message, 'fix:') ||
+        startsWith(github.event.head_commit.message, 'perf:') ||
+        startsWith(github.event.head_commit.message, 'revert:')
+      )
 
     permissions:
       contents: read
