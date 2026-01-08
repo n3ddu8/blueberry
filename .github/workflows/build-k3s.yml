@@ -12,6 +12,15 @@ env:
 jobs:
   build-k3s:
     runs-on: ubuntu-24.04-arm
+    if: |
+      github.event_name != 'push' ||
+      (
+        startsWith(github.event.head_commit.message, 'feat:') ||
+        startsWith(github.event.head_commit.message, 'fix:') ||
+        startsWith(github.event.head_commit.message, 'perf:') ||
+        startsWith(github.event.head_commit.message, 'revert:')
+      )
+
     permissions:
       contents: read
       packages: write
