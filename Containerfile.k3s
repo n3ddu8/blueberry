@@ -10,12 +10,18 @@ COPY build_files/k3s/k3s-enable /usr/bin/k3s-enable
 
 RUN chmod +x /usr/bin/k3s-enable \
     && dnf5 install -y \
-       k3s \
        container-selinux \
        iptables-nft \
        conntrack \
        socat \
        ebtables \
+       curl \
+    && curl -L https://github.com/k3s-io/k3s/releases/download/v1.29.1+k3s1/k3s \
+         -o /usr/bin/k3s \
+    && chmod 0755 /usr/bin/k3s \
+    && ln -sf /usr/bin/k3s /usr/bin/kubectl \
+    && ln -sf /usr/bin/k3s /usr/bin/crictl \
+    && ln -sf /usr/bin/k3s /usr/bin/ctr \
     && systemctl enable k3s-activation.service
 
 RUN bootc container lint
