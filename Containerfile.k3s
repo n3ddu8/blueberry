@@ -16,7 +16,7 @@ RUN chmod +x /usr/bin/k3s-enable \
        socat \
        ebtables \
        curl \
-    && curl -L https://github.com/k3s-io/k3s/releases/download/v1.29.1+k3s1/k3s \
+    && curl -L https://github.com/k3s-io/k3s/releases/download/v1.29.1+k3s1/k3s-arm64 \
          -o /usr/bin/k3s \
     && chmod 0755 /usr/bin/k3s \
     && ln -sf /usr/bin/k3s /usr/bin/kubectl \
