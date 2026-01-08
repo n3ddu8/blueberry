@@ -22,7 +22,6 @@ dnf5 install -y \
     podman \
     podman-compose \
     qemu-guest-agent \
-    tailscale \
     tmux \
     wireguard-tools
 
